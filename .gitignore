@@ -1,0 +1,11 @@
+# Mac OS X
+.DS_Store
+
+## Various settings
+xcuserdata
+
+## Other
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
