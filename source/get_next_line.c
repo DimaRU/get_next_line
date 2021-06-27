@@ -38,7 +38,7 @@ static void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 
 	new_ptr = malloc(new_size);
 	if (old_size != 0 && new_ptr != NULL)
-		ft_memcpy(new_ptr, ptr, new_size);
+		ft_memcpy(new_ptr, ptr, old_size);
 	if (old_size != 0)
 		free(ptr);
 	return (new_ptr);
@@ -87,18 +87,19 @@ int	get_next_line(int fd, char **line)
 	size_t		line_len;
 	ssize_t		read_len;
 
+	if (fd < 0 || fd >= 1000 || BUFFER_SIZE == 0 || line == NULL)
+		return (-1);
 	line_len = 0;
 	read_len = 1;
 	while (read_len > 0)
 	{
-		if (*buffer != '\0')
-		{
-			if (flush_buffer(buffer, line, &line_len))
-				return (1);
-		}
+		if (*buffer != '\0' && flush_buffer(buffer, line, &line_len))
+			return (1);
 		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len >= 0)
 			buffer[read_len] = '\0';
 	}
+	*line = ft_realloc(*line, line_len, line_len + 1);
+	(*line)[line_len] = '\0';
 	return ((int)read_len);
 }
