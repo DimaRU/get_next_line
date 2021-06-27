@@ -99,13 +99,6 @@ int	get_next_line(int fd, char **line)
 		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len >= 0)
 			buffer[read_len] = '\0';
-		if (read_len == 0 && line_len != 0)
-		{
-			*line = ft_realloc(*line, line_len, line_len + 1);
-			if (*line != NULL)
-				(*line)[line_len] = '\0';
-			return (1);
-		}
 	}
 	return ((int)read_len);
 }
