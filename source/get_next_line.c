@@ -11,37 +11,20 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdbool.h>
-typedef unsigned char	t_uchar;
 
 static void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	size_t	i;
+	void	*dest;
 
 	if (!dst && !src)
 		return (NULL);
-	i = 0;
-	while (i < n)
-	{
-		*(char *)(dst + i) = *(const char *)(src + i);
-		i++;
-	}
-	return (dst);
-}
-
-static void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
-{
-	void	*new_ptr;
-
-	new_ptr = malloc(new_size);
-	if (old_size != 0 && new_ptr != NULL)
-		ft_memcpy(new_ptr, ptr, old_size);
-	if (old_size != 0)
-		free(ptr);
-	return (new_ptr);
+	dest = dst;
+	while (n-- > 0)
+		*(char *)(dst++) = *(const char *)(src++);
+	return (dest);
 }
 
 static char	*ft_strcpy(char *dest, char *src)
@@ -56,6 +39,18 @@ static char	*ft_strcpy(char *dest, char *src)
 			break ;
 	}
 	return (dest);
+}
+
+static void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
+{
+	void	*new_ptr;
+
+	new_ptr = malloc(new_size);
+	if (old_size != 0 && new_ptr != NULL)
+		ft_memcpy(new_ptr, ptr, old_size);
+	if (old_size != 0)
+		free(ptr);
+	return (new_ptr);
 }
 
 static bool	flush_buffer(char *buffer, char **line, size_t *line_len)
