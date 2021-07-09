@@ -19,8 +19,6 @@ static void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	void	*dest;
 
-	if (!dst && !src)
-		return (NULL);
 	dest = dst;
 	while (n-- > 0)
 		*(char *)(dst++) = *(const char *)(src++);
@@ -56,45 +54,46 @@ static void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 static bool	flush_buffer(char *buffer, char **line, size_t *line_len)
 {
 	size_t	eol_index;
-	bool	rezult;
+	int		rezult;
 
 	eol_index = 0;
 	while (buffer[eol_index] != '\n' && buffer[eol_index] != '\0')
 		eol_index++;
-	rezult = false;
+	rezult = 0;
 	if (buffer[eol_index] == '\n')
-	{
-		rezult = true;
-		buffer[eol_index++] = '\0';
-	}
-	*line = ft_realloc(*line, *line_len, *line_len + eol_index);
+		rezult = 1;
+	*line = ft_realloc(*line, *line_len, *line_len + eol_index + rezult * 2);
 	if (*line == NULL)
-		return (false);
-	ft_memcpy(*line + *line_len, buffer, eol_index);
-	ft_strcpy(buffer, buffer + eol_index);
-	*line_len += eol_index;
-	return (rezult);
+		return (true);
+	ft_memcpy(*line + *line_len, buffer, eol_index + rezult);
+	ft_strcpy(buffer, buffer + eol_index + rezult);
+	*line_len += eol_index + rezult;
+	if (rezult == 1)
+		(*line)[*line_len] = '\0';
+	return (rezult == 1);
 }
 
-int	get_next_line(int fd, char **line)
+char	*get_next_line(int fd)
 {
 	static char	buffer[BUFFER_SIZE + 1];
 	size_t		line_len;
 	ssize_t		read_len;
+	char		*line;
 
-	if (fd < 0 || fd >= 1000 || BUFFER_SIZE == 0 || line == NULL)
-		return (-1);
+	line = NULL;
 	line_len = 0;
 	read_len = 1;
 	while (read_len > 0)
 	{
-		if (*buffer != '\0' && flush_buffer(buffer, line, &line_len))
-			return (1);
+		if (*buffer != '\0' && flush_buffer(buffer, &line, &line_len))
+			return (line);
 		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len >= 0)
 			buffer[read_len] = '\0';
 	}
-	*line = ft_realloc(*line, line_len, line_len + 1);
-	(*line)[line_len] = '\0';
-	return ((int)read_len);
+	if (read_len <= 0 && line_len == 0)
+		return (NULL);
+	line = ft_realloc(line, line_len, line_len + 1);
+	line[line_len] = '\0';
+	return (line);
 }

@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 #include <fcntl.h>
 #include "get_next_line.h"
 
 int main(int argc, char *argv[]) {
 	char *line;
-	int rezult;
 	int file_descriptor;
 
 	setbuf(stdout, NULL);
@@ -28,16 +28,23 @@ int main(int argc, char *argv[]) {
 	} else {
 		file_descriptor = STDIN_FILENO;
 	}
+
+	// 1. Test error
+	line = get_next_line(100);
+	if (line != NULL) {
+		printf("Wrong file descriptor but line is't NULL\n");
+		exit(1);
+	}
+
 	while (1) {
 		printf(">");
 		line = NULL;
-		rezult = get_next_line(file_descriptor, &line);
-		if (rezult <= 0) {
-			int rezult1 = get_next_line(file_descriptor, &line);
-			printf("After eof: %d, %d %lx\n", rezult, rezult1, line);
-			return rezult;
+		line = get_next_line(file_descriptor);
+		if (line == NULL) {
+			printf("%s\n", line);
+			return 0;
 		}
-		printf("%d: '%s'\n", rezult, line);
+		printf("%lu: %s", strlen(line), line);
 		free(line);
 	}
     return 0;

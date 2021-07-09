@@ -59,7 +59,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/dmitry/Developer/school21/GetNextLine/16x16-nl"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/dmitry/Developer/school21/GetNextLine/32-nl"
@@ -74,6 +74,13 @@
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
+      <AdditionalOptions>
+         <AdditionalOption
+            key = "MallocScribble"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
+      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
